@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class Movimiento : MonoBehaviour
 {
-    public float speed = 10f;
+    public float speed = 5f;
     public float rotationSpeed = 700f;
     public float jumpSpeed = 8f;
-    public float gravity = 0; // Gravedad estándar
+    public float gravity = -9.81f; // Gravedad estándar
 
     private Animator animator;
     private CharacterController characterController;
@@ -35,6 +35,11 @@ public class Movimiento : MonoBehaviour
             if (Input.GetButtonDown("Jump"))
             {
                 ySpeed = jumpSpeed;  // Aplicar impulso de salto
+                animator.SetBool("Salto", true); // Activar animación de salto
+            }
+            else
+            {
+                animator.SetBool("Salto", false); // Desactivar animación de salto
             }
         }
         else
