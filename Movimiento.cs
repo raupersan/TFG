@@ -5,12 +5,12 @@ public class Movimiento : MonoBehaviour
 {
     public float speed = 5f;
     public float jumpSpeed = 8f;
-    public float gravity = -9.81f; // Gravedad est√°ndar
+    public float gravity = -9.81f; // Gravedad est·ndar
     public float mouseSensitivity = 100f;
     public Camera playerCamera;
-    public Image cruz; // Referencia a la imagen de la ret√≠cula
-    public float zoomFOV = 40f; // Campo de visi√≥n al hacer zoom
-    public float normalFOV = 60f; // Campo de visi√≥n normal
+    public Image cruz; // Referencia a la imagen de la retÌcula
+    public float zoomFOV = 40f; // Campo de visiÛn al hacer zoom
+    public float normalFOV = 60f; // Campo de visiÛn normal
     public float zoomSpeed = 10f; // Velocidad del zoom
     public GameObject rifle; // Asigna el rifle en el Inspector
     public Transform rightHand; // Asigna la mano derecha del personaje en el Inspector
@@ -30,37 +30,37 @@ public class Movimiento : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked; // Bloquear el cursor en el centro de la pantalla
 
-        // Reproducir la animaci√≥n Idle al inicio
+        // Reproducir la animaciÛn Idle al inicio
         animator.Play("Iddle");
 
-        // Asegurar que la ret√≠cula est√© oculta al inicio
+        // Asegurar que la retÌcula estÈ oculta al inicio
         if (cruz != null)
         {
             cruz.enabled = false;
         }
         else
         {
-            Debug.LogError("La referencia a la ret√≠cula (cruz) no est√° asignada en el Inspector.");
+            Debug.LogError("La referencia a la retÌcula (cruz) no est· asignada en el Inspector.");
         }
 
         // Anclar el rifle a la mano derecha del personaje
         if (rifle != null && rightHand != null)
         {
-            rifle.SetActive(true); // Aseg√∫rate de que el rifle est√© activo
+            rifle.SetActive(true); // Aseg˙rate de que el rifle estÈ activo
             rifle.transform.SetParent(rightHand); // Anclar el rifle a la mano derecha
-            rifle.transform.localPosition = new Vector3(-0.039f, 0.067f, 0.011f); // Ajusta seg√∫n sea necesario                                                                         // Ajusta seg√∫n sea necesario
-            rifle.transform.localRotation = Quaternion.Euler(-106.83f, 77.51f, 14.7f); // Ajusta seg√∫n sea necesario
+            rifle.transform.localPosition = new Vector3(-0.039f, 0.067f, 0.011f); // Ajusta seg˙n sea necesario                                                                         // Ajusta seg˙n sea necesario
+            rifle.transform.localRotation = Quaternion.Euler(-106.83f, 77.51f, 14.7f); // Ajusta seg˙n sea necesario
         }
         else
         {
-            Debug.LogError("El rifle o la mano derecha no est√°n asignados en el Inspector.");
+            Debug.LogError("El rifle o la mano derecha no est·n asignados en el Inspector.");
         }
 
-        // Ajustar posici√≥n y rotaci√≥n del objetivo IK de la mano izquierda
+        // Ajustar posiciÛn y rotaciÛn del objetivo IK de la mano izquierda
         if (leftHandIKTarget != null)
         {
-            leftHandIKTarget.localPosition = new Vector3(0.255f, -0.2f, 0.3f); // Ajusta estos valores seg√∫n sea necesario
-            leftHandIKTarget.localRotation = Quaternion.Euler(30f, 0f, 90f); // Ajusta estos valores seg√∫n sea necesario
+            leftHandIKTarget.localPosition = new Vector3(0.255f, -0.2f, 0.3f); // Ajusta estos valores seg˙n sea necesario
+            leftHandIKTarget.localRotation = Quaternion.Euler(30f, 0f, 90f); // Ajusta estos valores seg˙n sea necesario
         }
     }
 
@@ -70,22 +70,22 @@ public class Movimiento : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        // Obtener las entradas del rat√≥n
+        // Obtener las entradas del ratÛn
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        // Ajustar la rotaci√≥n de la c√°mara en el eje vertical
+        // Ajustar la rotaciÛn de la c·mara en el eje vertical
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
-        // Ajustar la rotaci√≥n del personaje en el eje horizontal
+        // Ajustar la rotaciÛn del personaje en el eje horizontal
         transform.Rotate(Vector3.up * mouseX);
 
-        // Crear direcci√≥n de movimiento en base a las entradas
+        // Crear direcciÛn de movimiento en base a las entradas
         Vector3 moveDirection = transform.right * horizontalInput + transform.forward * verticalInput;
 
-        // Si el personaje est√° en el suelo
+        // Si el personaje est· en el suelo
         if (characterController.isGrounded)
         {
             ySpeed = 0;  // Restablecer la velocidad en Y al estar en el suelo
@@ -94,18 +94,18 @@ public class Movimiento : MonoBehaviour
             if (Input.GetButtonDown("Jump"))
             {
                 ySpeed = jumpSpeed;  // Aplicar impulso de salto
-                animator.SetBool("Salto", true); // Activar animaci√≥n de salto
+                animator.SetBool("Salto", true); // Activar animaciÛn de salto
             }
             else
             {
-                animator.SetBool("Salto", false); // Desactivar animaci√≥n de salto
+                animator.SetBool("Salto", false); // Desactivar animaciÛn de salto
             }
            
             
         }
         else
         {
-            // Si el personaje no est√° en el suelo, aplicar gravedad
+            // Si el personaje no est· en el suelo, aplicar gravedad
             ySpeed += gravity * Time.deltaTime;  // Aplicar la gravedad
         }
 
@@ -116,7 +116,7 @@ public class Movimiento : MonoBehaviour
         // Mover al personaje
         characterController.Move(velocity * Time.deltaTime);
 
-        // Animaci√≥n: si hay movimiento, activar animaci√≥n de caminar
+        // AnimaciÛn: si hay movimiento, activar animaciÛn de caminar
         animator.SetBool("isWalking", moveDirection.magnitude > 0);
 
         if (Input.GetButton("LeftShift")) // Detects if the button is being held down
@@ -132,36 +132,6 @@ public class Movimiento : MonoBehaviour
 
 
     }
-    void ApuntarArma()
-    {
-        // Realizar un Raycast desde el centro de la c√°mara hacia adelante
-        Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)); // Centro de la pantalla
-        RaycastHit hit;
-
-        // Dibujar el raycast para depuraci√≥n (esto aparece en la ventana de Scene)
-        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
-
-        // Determinar el punto objetivo
-        Vector3 puntoObjetivo;
-        if (Physics.Raycast(ray, out hit, 100f)) // Si el Raycast golpea algo
-        {
-            puntoObjetivo = hit.point;
-        }
-        else // Si no golpea nada, apunta a un punto lejos en el eje Z
-        {
-            puntoObjetivo = ray.GetPoint(100f); // A 100 unidades hacia adelante
-        }
-
-        // Calcular la rotaci√≥n necesaria para que el arma apunte al punto objetivo
-        Quaternion rotacionObjetivo = Quaternion.LookRotation(puntoObjetivo - rifle.transform.position);
-
-        // Ajustar suavemente la rotaci√≥n usando Slerp
-        rifle.transform.rotation = Quaternion.Slerp(rifle.transform.rotation, rotacionObjetivo, Time.deltaTime * 10f);
-    }
-
-
-
-
 
     void OnAnimatorIK(int layerIndex)
     {
@@ -174,7 +144,7 @@ public class Movimiento : MonoBehaviour
             animator.SetIKRotation(AvatarIKGoal.RightHand, rightHand.rotation);
         }
 
-        // Mano izquierda (ajusta la posici√≥n al objetivo IK)
+        // Mano izquierda (ajusta la posiciÛn al objetivo IK)
         if (leftHandIKTarget != null)
         {
             animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 5f);
