@@ -1,133 +1,115 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Movimiento : MonoBehaviour
+public class movimientoSwat : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed =3f;
     public float jumpSpeed = 8f;
-    public float gravity = -9.81f; // Gravedad estándar
+    public float gravity = -9.81f;
     public float mouseSensitivity = 100f;
+
     public Camera playerCamera;
-    public Image cruz; // Referencia a la imagen de la retícula
-    public float zoomFOV = 40f; // Campo de visión al hacer zoom
-    public float normalFOV = 60f; // Campo de visión normal
-    public float zoomSpeed = 10f; // Velocidad del zoom
-    public GameObject rifle; // Asigna el rifle en el Inspector
-    public Transform rightHand; // Asigna la mano derecha del personaje en el Inspector
-    public Transform leftHandIKTarget; // Asigna el objetivo IK de la mano izquierda en el Inspector
+    public Image cruz; // RetÃ­cula de apuntado
+    public GameObject rifle; // Rifle configurado como arma inicial
+    public GameObject pistola; // Pistola para cambiar mÃ¡s tarde
+    public Transform rightHand; // Mano derecha
+    public Transform leftHandIKTarget; // Objetivo IK para la mano izquierda
+    public Transform cameraAnchor;
 
     private Animator animator;
     private CharacterController characterController;
     private float ySpeed;
     private float xRotation = 0f;
 
-    public Arma arma;
-
-    public float runSpeed = 10f;
     void Start()
     {
+        // Configurar referencias
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
-        Cursor.lockState = CursorLockMode.Locked; // Bloquear el cursor en el centro de la pantalla
+        Cursor.lockState = CursorLockMode.Locked;
 
-        // Reproducir la animación Idle al inicio
-        animator.Play("Iddle");
+        // Configurar el rifle como arma inicial
+        if (rifle != null && rightHand != null)
+        {
+            rifle.SetActive(true); // Activar el rifle
+            rifle.transform.SetParent(rightHand); // Anclar el rifle a la mano derecha
+            rifle.transform.localPosition = new Vector3(-0.132f, 0.098f, -0.315f); // Ajusta segÃºn sea necesario
+            rifle.transform.localRotation = Quaternion.Euler(-64.1f, 16.6f, 126.3f); // Ajusta segÃºn sea necesario
+        }
+        else
+        {
+            Debug.LogError("Rifle o mano derecha no asignados en el Inspector.");
+        }
 
-        // Asegurar que la retícula esté oculta al inicio
+        // Desactivar la pistola al inicio
+        if (pistola != null)
+        {
+            pistola.SetActive(false);
+        }
+
+        // Asegurar que la retÃ­cula estÃ© oculta al inicio
         if (cruz != null)
         {
             cruz.enabled = false;
         }
         else
         {
-            Debug.LogError("La referencia a la retícula (cruz) no está asignada en el Inspector.");
-        }
-
-        // Anclar el rifle a la mano derecha del personaje
-        if (rifle != null && rightHand != null)
-        {
-            rifle.SetActive(true); // Asegúrate de que el rifle esté activo
-            rifle.transform.SetParent(rightHand); // Anclar el rifle a la mano derecha
-            rifle.transform.localPosition = new Vector3(-0.039f, 0.067f, 0.011f); // Ajusta según sea necesario                                                                         // Ajusta según sea necesario
-            rifle.transform.localRotation = Quaternion.Euler(-106.83f, 77.51f, 14.7f); // Ajusta según sea necesario
-        }
-        else
-        {
-            Debug.LogError("El rifle o la mano derecha no están asignados en el Inspector.");
-        }
-
-        // Ajustar posición y rotación del objetivo IK de la mano izquierda
-        if (leftHandIKTarget != null)
-        {
-            leftHandIKTarget.localPosition = new Vector3(0.255f, -0.2f, 0.3f); // Ajusta estos valores según sea necesario
-            leftHandIKTarget.localRotation = Quaternion.Euler(30f, 0f, 90f); // Ajusta estos valores según sea necesario
+            Debug.LogError("No se ha asignado la retÃ­cula en el Inspector.");
         }
     }
 
     void Update()
     {
-        // Obtener las entradas de movimiento
+        // Movimiento y rotaciÃ³n
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        // Obtener las entradas del ratón
+        //Esto es la rotaciÃ³n de la cÃ¡mara
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        // Ajustar la rotación de la cámara en el eje vertical
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        xRotation = Mathf.Clamp(xRotation, -60f, 90f);
 
-        // Ajustar la rotación del personaje en el eje horizontal
+        playerCamera.transform.position = cameraAnchor.position;
+        playerCamera.transform.rotation = cameraAnchor.rotation;
+
         transform.Rotate(Vector3.up * mouseX);
 
-        // Crear dirección de movimiento en base a las entradas
+        //Se ejecutan los movimientos del personaje
         Vector3 moveDirection = transform.right * horizontalInput + transform.forward * verticalInput;
-
-        // Si el personaje está en el suelo
         if (characterController.isGrounded)
         {
-            ySpeed = 0;  // Restablecer la velocidad en Y al estar en el suelo
-
-            // Si presionamos salto, aplicamos el salto
+            ySpeed = 0;
             if (Input.GetButtonDown("Jump"))
             {
-                ySpeed = jumpSpeed;  // Aplicar impulso de salto
-                animator.SetBool("Salto", true); // Activar animación de salto
+                ySpeed = jumpSpeed;
+                animator.SetBool("Salto", true);
             }
             else
             {
-                animator.SetBool("Salto", false); // Desactivar animación de salto
+                animator.SetBool("Salto", false);
             }
-           
-            
         }
         else
         {
-            // Si el personaje no está en el suelo, aplicar gravedad
-            ySpeed += gravity * Time.deltaTime;  // Aplicar la gravedad
+            ySpeed += gravity * Time.deltaTime;
         }
 
-        // Crear la velocidad final (solo horizontal y salto)
-        Vector3 velocity = moveDirection * speed;  // Movimiento horizontal
-        velocity.y = ySpeed;  // Aplicar la velocidad vertical (salto y gravedad)
-
-        // Mover al personaje
+        Vector3 velocity = moveDirection * speed;
+        velocity.y = ySpeed;
         characterController.Move(velocity * Time.deltaTime);
 
-        // Animación: si hay movimiento, activar animación de caminar
+        // Animaciones de caminar y correr
         animator.SetBool("isWalking", moveDirection.magnitude > 0);
 
-        if (Input.GetButton("LeftShift")) // Detects if the button is being held down
+        if (Input.GetButton("LeftShift"))
         {
             speed = 10f;
-            animator.SetBool("Correr", true); // Activates the running animation
+            animator.SetBool("Correr", true);
         }
         else
         {
-            speed = 3f;
-            animator.SetBool("Correr", false); // Stops the running animation
+            speed = 5f;
+            animator.SetBool("Correr", false);
         }
 
 
@@ -135,7 +117,7 @@ public class Movimiento : MonoBehaviour
 
     void OnAnimatorIK(int layerIndex)
     {
-        // Mano derecha (arma conectada a la mano derecha)
+        // IK para la mano derecha (rifle)
         if (rightHand != null)
         {
             animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1f);
@@ -143,17 +125,24 @@ public class Movimiento : MonoBehaviour
             animator.SetIKPosition(AvatarIKGoal.RightHand, rightHand.position);
             animator.SetIKRotation(AvatarIKGoal.RightHand, rightHand.rotation);
         }
+        float leftHandWeight = 1f; // AsegÃºrate de que este valor estÃ© entre 0 y 1
 
-        // Mano izquierda (ajusta la posición al objetivo IK)
         if (leftHandIKTarget != null)
         {
-            animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 5f);
+            animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, leftHandWeight);
+            animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, leftHandWeight);
+            animator.SetIKPosition(AvatarIKGoal.LeftHand, leftHandIKTarget.position);
+            animator.SetIKRotation(AvatarIKGoal.LeftHand, leftHandIKTarget.rotation);
+        }
+
+        // IK para la mano izquierda (apoyo en el rifle)
+        if (leftHandIKTarget != null)
+        {
+            animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1f);
             animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1f);
             animator.SetIKPosition(AvatarIKGoal.LeftHand, leftHandIKTarget.position);
             animator.SetIKRotation(AvatarIKGoal.LeftHand, leftHandIKTarget.rotation);
         }
+
     }
-
-
-
 }
