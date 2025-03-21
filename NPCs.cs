@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
-
+//del
+//https://www.youtube.com/watch?v=UjkSFoLxesw
 public class EnemyAITutorial : MonoBehavious
 {
     public NavMeshAgent agent;
