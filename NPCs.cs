@@ -1,12 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
 //del
-//https://www.youtube.com/watch?v=UjkSFoLxesw
-public class EnemyAITutorial : MonoBehavious
-{
-    public NavMeshAgent agent;
-    public float health
-    public Transform player;
 
     public LayerMask whatIsGround, whatIsPlayer;
 
@@ -29,8 +23,7 @@ public class EnemyAITutorial : MonoBehavious
     }
     private void Update ()
     {
-        jugadorEnRangoDeAlcance = Physics.CheckSphere(transform.position, rangoAlcance, whatIsPlayer);
-        jugadorEnRangoDeAtaque = Physics.CheckSphere(transform.position, rangoAtaque, whatIsPlayer);
+    
     if(!jugadorEnRangoDeAlcance && !jugadorEnRangoDeAtaque)
         Patrolling();
     if(jugadorEnRangoDeAlcance && !jugadorEnRangoDeAtaque)
