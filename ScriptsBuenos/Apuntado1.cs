@@ -4,27 +4,27 @@ using UnityEngine.UI;
 public class Apuntado1 : MonoBehaviour
 {
     public Animator animator;    // Animator del personaje para controlar animaciones
-    public Image cruz;           // Retícula en el UI (asignada desde el Canvas)
+    public Image cruz;           // RetÃ­cula en el UI (asignada desde el Canvas)
     public GameObject proyectil; // Prefab del proyectil
-    public Transform spawn;      // Punto de aparición del proyectil
-    public Camera playerCamera;  // Cámara del jugador
+    public Transform spawn;      // Punto de apariciÃ³n del proyectil
+    public Camera playerCamera;  // CÃ¡mara del jugador
     public float rate = 0.5f;    // Cadencia de disparo
     private float shotRate;      // Temporizador para controlar los disparos
-    public float damage = 20f;   // Daño del arma
+    public float damage = 20f;   // DaÃ±o del arma
     public LayerMask aimLayerMask; // Capas con las que debe colisionar el raycast
-    public Transform cameraAimPoint; // Punto en el rifle hacia donde la cámara debe apuntar
+    public Transform cameraAimPoint; // Punto en el rifle hacia donde la cÃ¡mara debe apuntar
 
     void Start()
     {
 
-        //// Ocultar retícula al inicio
+        //// Ocultar retÃ­cula al inicio
         if (cruz != null)
         {
-            cruz.enabled = false; // La retícula comienza oculta
+            cruz.enabled = false; // La retÃ­cula comienza oculta
         }
         else
         {
-            Debug.LogError("No se ha asignado la retícula (cruz) en el Inspector.");
+            Debug.LogError("No se ha asignado la retÃ­cula (cruz) en el Inspector.");
         }
     }
 
@@ -32,7 +32,7 @@ public class Apuntado1 : MonoBehaviour
     {
         if (cameraAimPoint != null && playerCamera != null)
         {
-            // Ajuste de la posición y rotación de la cámara
+            // Ajuste de la posiciÃ³n y rotaciÃ³n de la cÃ¡mara
             Vector3 offset = new Vector3(0, 0.3f, -0.5f); // Ajuste para evitar colisiones con objetos cercanos
             playerCamera.transform.position = cameraAimPoint.position + cameraAimPoint.forward * offset.z + cameraAimPoint.up * offset.y;
 
@@ -42,13 +42,13 @@ public class Apuntado1 : MonoBehaviour
         }
 
         // Control del apuntado (Fire2)
-        if (Input.GetButton("Fire2")) // Botón derecho para apuntar
+        if (Input.GetButton("Fire2")) // BotÃ³n derecho para apuntar
         {
-            // Mostrar la retícula
+            // Mostrar la retÃ­cula
             if (cruz != null)
             {
                 cruz.enabled = true;
-                cruz.rectTransform.sizeDelta = new Vector2(32, 32); // Tamaño fijo de la retícula
+                cruz.rectTransform.sizeDelta = new Vector2(32, 32); // TamaÃ±o fijo de la retÃ­cula
             }
 
             // Reducir FOV para zoom
@@ -59,7 +59,7 @@ public class Apuntado1 : MonoBehaviour
         }
         else
         {
-            // Ocultar la retícula
+            // Ocultar la retÃ­cula
             if (cruz != null)
             {
                 cruz.enabled = false;
