@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class VidaPersonaje : MonoBehaviour
 {
-    public float maxHealth = 100f; // Vida m·xima
+    public float maxHealth = 100f; // Vida m√°xima
     public float currentHealth;   // Vida actual
     public Slider healthSlider;   // Barra de vida en el UI. Parte de Nati Natasha :3
 
@@ -29,7 +29,7 @@ public class VidaPersonaje : MonoBehaviour
             healthSlider.value = currentHealth; // Actualizar barra de vida
         }
 
-        Debug.Log($"Jugador recibiÛ {damage} de daÒo. Vida restante: {currentHealth}");
+        Debug.Log($"Jugador recibi√≥ {damage} de da√±o. Vida restante: {currentHealth}");
 
         if (currentHealth <= 0)
         {
@@ -48,12 +48,22 @@ public class VidaPersonaje : MonoBehaviour
             healthSlider.value = currentHealth; // Actualizar barra de vida
         }
 
-        Debug.Log($"Jugador se curÛ {amount} puntos. Vida actual: {currentHealth}");
+        Debug.Log($"Jugador se cur√≥ {amount} puntos. Vida actual: {currentHealth}");
     }
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"El jugador ha tocado: {other.name}");
 
+        if (other.CompareTag("Enemy")) // Verifica si es un enemigo
+        {
+            Debug.Log("El jugador fue golpeado por un enemigo.");
+            TakeDamage(10f); // Aplicar 10 de da√±o (ajusta seg√∫n sea necesario)
+        }
+    }
     private void Die()
     {
         Debug.Log("El jugador ha muerto.");
-        // AquÌ puedes aÒadir lÛgica para reiniciar el nivel o mostrar un men˙ de muerte
+        Destroy(gameObject);
     }
 }
+//Aviso a navegantes: hay que asignarle una barra de vida y mejorar esto en general. El jugador tiene que tener un mesh collider y rigid body
