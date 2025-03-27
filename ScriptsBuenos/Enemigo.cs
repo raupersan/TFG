@@ -92,28 +92,32 @@ public class Enemigo : MonoBehaviour
         agent.SetDestination(player.position);
     }
 
-    private void AttackPlayer()
+    void AttackPlayer()
     {
-        // Detén al enemigo y haz que mire hacia el jugador
-        agent.SetDestination(transform.position);
+        Debug.Log("Iniciando ataque.");
+        Rigidbody rb = Instantiate(projectile, transform.position + transform.forward * 1.5f + Vector3.up * 1f, Quaternion.identity).GetComponent<Rigidbody>();
 
-        Vector3 direction = (player.position - transform.position).normalized;
-        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-
-        if (!alreadyAttacked)
+        if (rb == null)
         {
-            // Código de ataque
-            Rigidbody rb = Instantiate(projectile, transform.position + Vector3.up * 1.5f, Quaternion.identity).GetComponent<Rigidbody>();
-            rb.AddForce(transform.forward * 15f, ForceMode.Impulse);
-            rb.AddForce(transform.up * 5f, ForceMode.Impulse);
+            Debug.LogError("El proyectil no tiene un componente Rigidbody.");
+            return;
+        }
 
-            Debug.Log("El enemigo está atacando.");
+        rb.AddForce(transform.forward * 32f, ForceMode.Impulse);
+        Debug.Log("Proyectil lanzado hacia el jugador.");
 
-            alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+        // Verificar impacto
+        Ray ray = new Ray(transform.position, transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, rangoAtaque))
+        {
+            Debug.Log($"Impacto en: {hit.collider.name}");
+            if (hit.collider.CompareTag("Player"))
+            {
+                hit.collider.GetComponent<VidaPersonaje>()?.TakeDamage(10f);
+            }
         }
     }
+
 
     private void ResetAttack()
     {
